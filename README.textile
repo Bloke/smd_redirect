@@ -1,0 +1,67 @@
+h1. smd_redirect
+
+Redirect one URL to another _without_ requiring @.htaccess@. Supports standard regular expression wildcard matches.
+
+Add rules using _Extensions -> Redirects_. Click 'New redirect' and enter a URL portion to match against, and then a destination for that URL.
+
+* Source and destination can either be:
+** relative (no preceeding slash).
+** root-relative (with preceding slash).
+** absolute (full URL including domain).
+* Source can be anchored if you specify the regex start (^) and/or end ($) anchor characters.
+* Use an empty destination to redirect to site root (pref planned to redirect to arbitrary URL).
+* Click and drag the up-down arrows to reorder the rules -- mainly for convenience since redirect chains can be created regardless of order. Redirects are processed in order, top to bottom, so if you have frequently used redirects it makes sense to put them at the top for speed reasons.
+* Click the source name to edit a rule.
+* Source can contain standard "preg_match":http://php.net/manual/en/function.preg-match.php patterns.
+* If you wrap an expression part with parentheses it becoms available as a replacement in the destination. Replacements are indexed from 1 and denoted @{$1}@, @{$2}@ and so forth.
+
+h2. Examples
+
+h3(#smd_eg1). Match any string
+
+bc(block). Source: training
+Destination: _empty_
+
+Any access to @site.com/training@ or @site.com/any/other/url/parts/training@ (or in fact any use of the word 'training' in the URL) will result in being redirected to the site home page.
+
+h3(#smd_eg2). Match string at specific place
+
+bc(block). Source: /training
+Destination: _empty_
+
+Any access to @site.com/training@ will redirect to home page.
+
+h3(#smd_eg3). Relative destinations
+
+bc(block). Source: training
+Destination: archive
+
+Redirect any access to @site.com/training@ to @site.com/archive@ instead. If accessing @site.com/some/path/to/training@ you will be redirected to @site.com/some/path/to/archive@. Note that this only works if the source is the last item on the URL. See "example 7":#smd_eg7 for a generic version to replace one part.
+
+h3(#smd_eg4). Root-relative destinations
+
+bc(block). Source: /training
+Destination: /archive
+
+Redirect any access to @site.com/training@ to the @site.com/archive@ section.
+
+h3(#smd_eg5). Date-based archive
+
+bc(block). Source: date/(\d\d)-(\d\d)-(\d{2,4})
+Destination: /{$3}/{$2}/{$1}
+
+Any URL that matches something of the form @site.com/date/DD-MM-YYYY@ (or DD-MM-YY) will redirect to @site.com/YYYY/MM/DD@. Notice that @{$N}@ matches the value of the Nth set of parentheses in the source.
+
+h3(#smd_eg6). Remove all trailing slashes
+
+bc(block). Source: ^/(.*)/$
+Destination: /{$1}
+
+Note that without the leading slashes your home page would probably not appear.
+
+h3(#smd_eg7). Replace part of a URL
+
+bc(block). Source: (.*)training(.*)
+Destination: {$1}documentation{$2}
+
+Will redirect @/some/boring/training/manual@ to @/some/boring/documentation/manual@.

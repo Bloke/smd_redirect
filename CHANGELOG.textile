@@ -1,0 +1,12 @@
+h1. Changelog
+
+h2. 0.11 - 2015-06-NN
+
+* Added Textpack strings
+* Fixed jQuery save/delete so multiple consecutive updates are possible
+* Fixed separate CSS event/step
+* Fixed PSR2 compliance
+
+h2. 0.10
+
+* Public alpha (unrleased)
