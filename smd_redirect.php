@@ -79,7 +79,6 @@ if (!defined('txpinterface'))
  * @author Stef Dawson
  * @link   http://stefdawson.com/
  */
-//TODO: when deleting more than one at once, only the first is actually deleted
 if (txpinterface === 'admin') {
     global $smd_redir_event;
     $smd_redir_event = 'smd_redir';
@@ -94,6 +93,9 @@ if (txpinterface === 'admin') {
 
 /**
  * Jump off point for event/steps.
+ *
+ * @param string $evt Textpattern event
+ * @param string $stp Textpattern step (action)
  */
 function smd_redir_dispatcher($evt, $stp)
 {
@@ -109,7 +111,7 @@ function smd_redir_dispatcher($evt, $stp)
 
     if ($stp == 'save_pane_state') {
         smd_redir_save_pane_state();
-    } else if (!$stp or !bouncer($stp, $available_steps)) {
+    } elseif (!$stp or !bouncer($stp, $available_steps)) {
         $stp = $smd_redir_event;
     }
 
@@ -118,6 +120,9 @@ function smd_redir_dispatcher($evt, $stp)
 
 /**
  * Render the plugin's CSS.
+ *
+ * @param string $evt Textpattern event
+ * @param string $stp Textpattern step (action)
  */
 function smd_redir_css($evt = '', $stp = '')
 {
@@ -152,6 +157,8 @@ function smd_redir_css($evt = '', $stp = '')
 
 /**
  * Main admin interface.
+ *
+ * @param string $msg Status message to display
  */
 function smd_redir($msg = '')
 {
@@ -163,15 +170,15 @@ function smd_redir($msg = '')
     $redirects = smd_redir_get(1);
 
     // Set up the buttons and column info
-    $newbtn = '<a class="navlink" href="#" onclick="return smd_redir_togglenew();">'.gTxt('smd_redir_btn_new').'</a>';
-    $prefbtn = '<a class="navlink btnpref" href="?event='.$smd_redir_event.a.'step=smd_redir_prefs">'.gTxt('smd_redir_btn_pref').'</a>';
+    $newbtn = '<a class="navlink" href="#" onclick="return smd_redir_togglenew();">' . gTxt('smd_redir_btn_new').'</a>';
+    $prefbtn = '<a class="navlink btnpref" href="?event=' . $smd_redir_event . a . 'step=smd_redir_prefs">' . gTxt('smd_redir_btn_pref').'</a>';
     $status = '<span id="smd_redir_status"></span>';
 
     $qs = array(
         "event" => $smd_redir_event,
     );
 
-    $qsVars = "index.php".join_qs($qs);
+    $qsVars = "index.php" . join_qs($qs);
 
     // i18n values for javascript
     $red_src = gTxt('smd_redir_source');
@@ -347,63 +354,67 @@ EOC
     echo smd_redir_dragdrop();
 
     $ftypes = array(
-        'smd_redir_src' => gTxt('smd_redir_source'),
+        'smd_redir_src'  => gTxt('smd_redir_source'),
         'smd_redir_dest' => gTxt('smd_redir_destination'),
     );
 
     // Control panel
     echo '<div id="smd_container">';
-    echo '<fieldset id="smd_redir_control_panel" class="txp-control-panel"><legend class="plain lever'.(get_pref('pane_smd_redir_cpanel_visible') ? ' expanded' : '').'"><a href="#smd_redir_cpanel">'.gTxt('smd_redir_control_panel').'</a></legend>';
-    echo '<div id="smd_redir_cpanel" class="toggle" style="display:'.(get_pref('pane_smd_redir_cpanel_visible') ? 'block' : 'none').'">';
+    echo '<fieldset id="smd_redir_control_panel" class="txp-control-panel"><legend class="plain lever' . (get_pref('pane_smd_redir_cpanel_visible') ? ' expanded' : '').'"><a href="#smd_redir_cpanel">' . gTxt('smd_redir_control_panel').'</a></legend>';
+    echo '<div id="smd_redir_cpanel" class="toggle" style="display:' . (get_pref('pane_smd_redir_cpanel_visible') ? 'block' : 'none').'">';
 
     echo '<form id="smd_redir_filtform" action="index.php" method="post">';
-    echo '<label for="smd_redir_search">'.gTxt('smd_redir_search').'</label>'
-        .'<span id="smd_redir_searchby">'
+    echo '<label for="smd_redir_search">' . gTxt('smd_redir_search') . '</label>'
+        . '<span id="smd_redir_searchby">'
             .selectInput('smd_redir_filt', $ftypes, '', 0, '', 'smd_redir_filt')
-        .'</span>'
-        .fInput('text', 'smd_redir_search', '', '', '', '', '', '', 'smd_redir_search')
-        .$prefbtn;
-    echo eInput($smd_redir_event).sInput('smd_redir_filter');
+        . '</span>'
+        . fInput('text', 'smd_redir_search', '', '', '', '', '', '', 'smd_redir_search')
+        . $prefbtn;
+    echo eInput($smd_redir_event) . sInput('smd_redir_filter');
     echo '</form>';
 
     echo '</div>';
     echo '</fieldset>';
 
     // Redirect list
-    echo n.'<div id="'.$smd_redir_event.'_container" class="txp-container txp-list">';
+    echo n . '<div id="' . $smd_redir_event . '_container" class="txp-container txp-list">';
     echo '<form name="smd_redir_form" id="smd_redir_form" action="index.php" method="post">';
     echo '<ul id="smd_redir_btnpanel">';
-    echo n.'<li id="smd_redir_buttons">' . $newbtn . sp . $status . '</li>';
+    echo n . '<li id="smd_redir_buttons">' . $newbtn . sp . $status . '</li>';
     echo '<li id="smd_redir_create" class="smd_hidden">'
-            .'<label for="smd_redir_newsource">' . gTxt('smd_redir_source') . '</label>'.fInput('text', 'smd_redir_newsource', '', 'smd_focus', '', '', '70', '' ,'smd_redir_newsource')
-            .br.'<label for="smd_redir_destination">' . gTxt('smd_redir_destination') . '</label>'.fInput('text', 'smd_redir_destination', '', '', '', '', '70', '' ,'smd_redir_destination')
-            .fInput('submit', 'smd_redir_add', gTxt('add'), 'smallerbox', '', '', '', '', 'smd_redir_add')
-            .eInput($smd_redir_event)
-            .sInput('smd_redir_create')
-            .tInput();
+            . '<label for="smd_redir_newsource">' . gTxt('smd_redir_source') . '</label>' . fInput('text', 'smd_redir_newsource', '', 'smd_focus', '', '', '70', '' ,'smd_redir_newsource')
+            . br . '<label for="smd_redir_destination">' . gTxt('smd_redir_destination') . '</label>' . fInput('text', 'smd_redir_destination', '', '', '', '', '70', '' ,'smd_redir_destination')
+            . fInput('submit', 'smd_redir_add', gTxt('add'), 'smallerbox', '', '', '', '', 'smd_redir_add')
+            . eInput($smd_redir_event)
+            . sInput('smd_redir_create')
+            . tInput();
     echo '</li></ul>';
     echo '</form>';
 
     // Remaining redirects
     echo '<ul id="smd_redirects">';
+
     foreach ($redirects as $idx => $items) {
         echo '<li>
             <span class="smd_redir_grab">&#8657;<br />&#8659;</span>
-            <input type="hidden" name="smd_redir_src_orig" value="'.$items['src'].'" />
-            <input type="hidden" name="smd_redir_dest_orig" value="'.$items['dst'].'" />
+            <input type="hidden" name="smd_redir_src_orig" value="' . $items['src'] . '" />
+            <input type="hidden" name="smd_redir_dest_orig" value="' . $items['dst'] . '" />
             <div class="smd_redir_item">
-            <div class="smd_redir_src closed">'.$items['src'].'</div>
-            <div class="smd_redir_dest">'.$items['dst']. '</div>
-         </div>
-            </li>';
+                <div class="smd_redir_src closed">' . $items['src'] . '</div>
+                <div class="smd_redir_dest">' . $items['dst'] . '</div>
+            </div>
+        </li>';
     }
-    echo '</ul>';
 
+    echo '</ul>';
     echo '</div>';
 }
 
-// Create a redirect from the admin side's 'New' button
-function smd_redir_create() {
+/**
+ * Create a redirect from the admin side's 'New' button.
+ */
+function smd_redir_create()
+{
     extract(gpsa(array('smd_redir_newsource', 'smd_redir_destination')));
 
     $out = array();
@@ -412,6 +423,7 @@ function smd_redir_create() {
         $redirects = smd_redir_get(0);
 
         $found = 0;
+
         foreach ($redirects as $idx => $items) {
             if ($items['src'] != $smd_redir_newsource) {
                 // Let existing rules through
@@ -423,8 +435,8 @@ function smd_redir_create() {
             }
         }
 
-        // Redirect doesn't already exist so add it
-        if ($found==0) {
+        // Redirect doesn't already exist so add it.
+        if ($found === 0) {
             $out[] = array('src' => $smd_redir_newsource, 'dst' => $smd_redir_destination);
         }
 
@@ -434,6 +446,7 @@ function smd_redir_create() {
     } else {
         $msg = array(gTxt('smd_redir_err_need_source'), E_ERROR);
     }
+
     smd_redir($msg);
 }
 
@@ -454,51 +467,80 @@ function smd_redir_save()
     exit;
 }
 
+/**
+ * Fetch the list of redirects currently in force.
+ *
+ * @param int $force Whether to force fetching the prefs from the DB to prevent stale values
+ */
 function smd_redir_get($force = 0)
 {
-    $redirects = ($force) ? safe_field('val', 'txp_prefs', 'name="smd_redirects"') : get_pref('smd_redirects', array());
+    $redirects = get_pref('smd_redirects', array(), $force);
     $redirects = ($redirects) ? smd_redir_unserialize($redirects) : array();
 
     return $redirects;
 }
 
-// Safe-ify saved pref values, since we're dealing with preg_match patterns
+/**
+ * Safe-ify saved pref values, since we're dealing with preg_match patterns.
+ */
 function smd_redir_serialize($obj)
 {
     $crush = smd_redir_check_crush();
-    return chunk_split(base64_encode( ( ($crush) ? gzcompress(serialize($obj)) : serialize($obj) ) ));
+    return chunk_split(base64_encode((($crush) ? gzcompress(serialize($obj)) : serialize($obj))));
 }
+
+/**
+ * Retrieve (unescape) saved pref values for display purposes.
+ */
 function smd_redir_unserialize($txt)
 {
     $crush = smd_redir_check_crush();
-    return unserialize( ( ($crush) ? gzuncompress(base64_decode($txt)) : base64_decode($txt) ) );
+    return unserialize((($crush) ? gzuncompress(base64_decode($txt)) : base64_decode($txt)));
 }
+
+/**
+ * Check if the ability to compress (gzip) content is available.
+ *
+ * @return bool
+ */
 function smd_redir_check_crush()
 {
     return (function_exists('gzcompress') && function_exists('gzuncompress'));
 }
 
-// Prefs panel
+/**
+ * Prefs panel.
+ *
+ * @todo
+ */
 function smd_redir_prefs($msg='')
 {
     pagetop(gTxt('smd_redir_tab_name'), $msg);
-echo '<p>Coming soon</p>';
+    echo '<p>Coming soon</p>';
 }
 
-// TODO: Needed?
-// Change and store qty-per-page value
+/**
+ * Change and store qty-per-page value.
+ *
+ * @todo Needed any more?
+ */ 
 function smd_redir_change_pageby()
 {
     event_change_pageby('smd_redir');
     smd_redir();
 }
 
-// The search dropdown list
+/**
+ * The search dropdown list.
+ *
+ * @param string $crit   Search criteria
+ * @param string $method Search method (field) to search against
+ */
 function smd_redir_search_form($crit, $method)
 {
     global $smd_redir_event;
 
-    $methods =	array(
+    $methods = array(
         'source'      => gTxt('smd_redir_source'),
         'destination' => gTxt('smd_redir_destination'),
     );
@@ -506,11 +548,16 @@ function smd_redir_search_form($crit, $method)
     return search_form($smd_redir_event, '', $crit, $methods, $method, 'source');
 }
 
-// -------------------------------------------------------------
+/**
+ * Save the state of the twisties.
+ *
+ * @todo Not needed from 4.6+
+ */
 function smd_redir_save_pane_state()
 {
     $panes = array('smd_redir_cpanel');
     $pane = gps('pane');
+
     if (in_array($pane, $panes)) {
         set_pref("pane_{$pane}_visible", (gps('visible') == 'true' ? '1' : '0'), 'smd_redir', PREF_HIDDEN, 'yesnoradio', 0, PREF_PRIVATE);
         send_xml_response();
@@ -519,7 +566,9 @@ function smd_redir_save_pane_state()
     }
 }
 
-// Just a base64-encoded version of DragSort (http://dragsort.codeplex.com/)
+/**
+ * A base64-encoded version of DragSort (http://dragsort.codeplex.com/).
+ */
 function smd_redir_dragdrop()
 {
     return script_js(base64_decode('
@@ -657,48 +706,57 @@ c2Nyb2xsQ29udGFpbmVyOndpbmRvdyxzY3JvbGxTcGVlZDo1fX0pKGpRdWVyeSk7
 '));
 }
 
-//**********************
-// PUBLIC SIDE INTERFACE
-//**********************
-// Todo: is this the most efficient way of doing it?
-//   Set a pref for 'default_site' (could be another domain)
-function smd_redirect() {
+/**
+ * Perform redirects on the public site.
+ *
+ * @todo Is this the most efficient way of doing it?
+ * @todo Set a pref for 'default_site' (could be another domain)
+ */
+function smd_redirect()
+{
     global $pretext, $siteurl;
 
     $debug = gps('smd_debug');
 
     $the_url = parse_url($pretext['request_uri']);
     $intended = $the_url['path'] . (isset($the_url['query']) ? '?'.$the_url['query'] : '');
+
     if ($debug) {
         echo '++ URL / PATH TO MATCH ++';
         dmp($the_url, $intended);
     }
 
-    // Can't use get_pref() on 404 pages *shrug*
+    // Can't use get_pref() on 404 pages *shrug*.
     $redirects = smd_redir_get(1);
     $dflt_location = get_pref('smd_redir_default_site', hu);
 
     foreach ($redirects as $idx => $items) {
-        // Rule can't redirect to itself: ignore
-        if ($items['src'] == $items['dst']) continue;
+        // Rule can't redirect to itself: ignore.
+        if ($items['src'] == $items['dst']) {
+            continue;
+        }
 
         // Add pattern delimiters.
         // Detect first possible delim char that is not in use in the regex itself.
         $dlmPool = array('`', '!', '@', '|', '#', '~', '%', '/');
         $dlm = array_merge(array_diff($dlmPool, preg_split('//', $items['src'], -1)));
-        $pat = (count($dlm) > 0) ? $dlm[0].$items['src'].$dlm[0] : $items['src'];
+        $pat = (count($dlm) > 0) ? $dlm[0] . $items['src'] . $dlm[0] : $items['src'];
+
         if (preg_match($pat, $intended, $matches)) {
             $redir = $items['dst'];
+
             if ($debug) {
                 echo '++ MATCHED PATTERN / REDIRECT RULE ++';
                 dmp($pat, $redir);
             }
 
             $reps = array();
+
             foreach ($matches as $idx => $input) {
                 if ($idx==0) continue; // Don't care about full matched pattern
-                $reps['{$'.$idx.'}'] = $input;
+                $reps['{$' . $idx . '}'] = $input;
             }
+
             $redir = ($redir) ? $redir : $dflt_location;
             $redir = strtr($redir, $reps);
 
@@ -710,14 +768,16 @@ function smd_redirect() {
             if (!$debug) {
                 ob_end_clean();
                 header("HTTP/1.0 301 Moved Permanently");
-                //TODO: Make these a pref
+
+                // Todo Make these a pref
                 header('Cache-Control: private, no-cache, must-revalidate');
-                header('Location:'.$redir, true, 301);
+                header('Location:' . $redir, true, 301);
                 die();
             }
         }
     }
 }
+
 # --- END PLUGIN CODE ---
 if (0) {
 ?>
