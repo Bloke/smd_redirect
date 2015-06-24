@@ -54,18 +54,21 @@ $plugin['flags'] = '0';
 // #@language ISO-LANGUAGE-CODE
 // abc_string_name => Localized String
 
-/** Uncomment me, if you need a textpack
-$plugin['textpack'] = <<< EOT
-#@admin
-#@language en-gb
-abc_sample_string => Sample String
-abc_one_more => One more
-#@language de-de
-abc_sample_string => Beispieltext
-abc_one_more => Noch einer
+$plugin['textpack'] = <<<EOT
+#@smd_redir
+smd_redir_added => Redirect added
+smd_redir_btn_new => New redirect
+smd_redir_btn_pref => Prefs
+smd_redir_control_panel => Control panel
+smd_redir_deleting =>  Deleting...
+smd_redir_destination => Destination
+smd_redir_err_need_source => You must supply a source URL
+smd_redir_saving =>  Saving...
+smd_redir_search => Search
+smd_redir_source => Source
+smd_redir_tab_name => Redirects
+smd_redir_updating =>  Updating...
 EOT;
-**/
-// End of textpack
 
 if (!defined('txpinterface'))
         @include_once('zem_tpl.php');
@@ -523,7 +526,7 @@ function smd_redir_prefs($msg='')
  * Change and store qty-per-page value.
  *
  * @todo Needed any more?
- */ 
+ */
 function smd_redir_change_pageby()
 {
     event_change_pageby('smd_redir');
@@ -777,7 +780,6 @@ function smd_redirect()
         }
     }
 }
-
 # --- END PLUGIN CODE ---
 if (0) {
 ?>
