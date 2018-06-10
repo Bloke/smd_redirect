@@ -317,7 +317,7 @@ jQuery(function() {
         placeHolderTemplate: "<li class='placeHolder'><div></div></li>"
     });
 
-    jQuery(".smd_redir_src.closed").live("click", function() {
+    jQuery(".smd_redir_src.closed").on("click", function() {
         var me = jQuery(this);
         me.toggleClass('closed');
         smd_redir_unedit();
