@@ -17,7 +17,7 @@ $plugin['name'] = 'smd_redirect';
 // 1 = Plugin help is in raw HTML.  Not recommended.
 # $plugin['allow_html_help'] = 1;
 
-$plugin['version'] = '0.11';
+$plugin['version'] = '0.12';
 $plugin['author'] = 'Stef Dawson';
 $plugin['author_uri'] = 'http://stefdawson.com/';
 $plugin['description'] = 'Redirect URLs from one place to another';
