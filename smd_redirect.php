@@ -402,7 +402,7 @@ EOC
 
     foreach ($redirects as $idx => $items) {
         echo '<li>
-            <span class="smd_redir_grab">&#8657;<br />&#8659;</span>
+            <span class="smd_redir_grab">&#9776;</span>
             <input type="hidden" name="smd_redir_src_orig" value="' . $items['src'] . '" />
             <input type="hidden" name="smd_redir_dest_orig" value="' . $items['dst'] . '" />
             <div class="smd_redir_item">
