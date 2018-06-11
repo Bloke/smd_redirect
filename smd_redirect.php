@@ -362,7 +362,9 @@ EOC
     );
 
     // Control panel
-    echo '<div id="smd_container">';
+    echo '<div id="smd_container" class="txp-layout">';
+    echo '<div class="txp-layout-2col"><h1 class="txp-heading">'.gTxt('smd_redir_tab_name').'</h1></div>';
+    echo '<div class="txp-layout-2col">';
     echo '<fieldset id="smd_redir_control_panel" class="txp-control-panel"><legend class="plain lever' . (get_pref('pane_smd_redir_cpanel_visible') ? ' expanded' : '').'"><a href="#smd_redir_cpanel">' . gTxt('smd_redir_control_panel').'</a></legend>';
     echo '<div id="smd_redir_cpanel" class="toggle" style="display:' . (get_pref('pane_smd_redir_cpanel_visible') ? 'block' : 'none').'">';
 
@@ -378,6 +380,7 @@ EOC
 
     echo '</div>';
     echo '</fieldset>';
+    echo '</div>';
 
     // Redirect list
     echo n . '<div id="' . $smd_redir_event . '_container" class="txp-container txp-list">';
