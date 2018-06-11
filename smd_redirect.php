@@ -135,23 +135,37 @@ function smd_redir_css($evt = '', $stp = '')
         $smd_redir_styles = array(
             'list' =>
              '.smd_hidden { display:none; }
-              #smd_redir_container { text-align:center; }
-              #smd_redirects { padding:0; margin:0 auto; width:70%; list-style-type:none; }
-              #smd_redirects li { padding:5px; border:solid 1px black; background-color:#e2dfce; text-align:center; color:#80551e}
+              #smd_redir_btnpanel { padding-left: 0; }
+              #smd_redir_container { }
+              #smd_redirects { padding:0; list-style-type:none; }
+              #smd_redirects li { padding:8px; border:solid 1px #ddd; margin-top: -1px; }
+              #smd_redirects li:nth-child(2n) { background: #f7f7f7; }
+              #smd_redirects li .smd_redir_item { display:inline; }
+              #smd_redirects li .smd_redir_src, #smd_redirects li .smd_redir_dest { display: inline-block; width: 45%; }
               #smd_redirects li .smd_redir_src { cursor: pointer; }
-              #smd_redirects li.edited { font-size:140%; }
-              .smd_redir_item label { width:6.2em; display:inline-block; }
+              #smd_redirects li .smd_redir_src.closed:after { content: "edit"; left: 40%; position: absolute; color: #004cbf; }
+              #smd_redirects li .smd_redir_src.closed:hover:after { color: #06f; }
+              #smd_redirects li.edited * { vertical-align:top; }
+              #smd_redirects li.edited .smd_redir_dest div { display: inline; }
+              #smd_redirects li.edited .smd_redir_dest button { margin-left: 1em; }
+              .smd_redir_item label { display: block; font-weight: bold; }
               .smd_redir_item input { width:70%; }
               #smd_redir_btnpanel li { list-style-type:none; }
-              .smd_redir_grab { float:right; font-size:115%; }
-              .placeHolder div { background-color:white !important; border:dashed 1px gray !important; }
-              #smd_redir_cpanel form { margin:10px; }
+              .smd_redir_grab { display:inline-block; width:3em; text-align:left; padding-left:0.5em; opacity:.66 }
+              .smd_redir_grab:hover,.smd_redir_grab:focus { opacity:1 }
+              .placeHolder div { background-color:white !important; border-top: 1px dotted #06f !important; }
+              #smd_redir_cpanel { float: right; padding: 0; }
               #smd_redir_cpanel form label { margin:0 6px; }
               .fieldset_inner { background-image:none; background-color:transparent; border:0; }
               #smd_redir_cpanel select, #smd_redir_cpanel input[type="text"] { margin-bottom:10px; }
               #smd_redir_cpanel input[type="text"] { padding:3px; }
-              #smd_redir_control_panel { margin:0 auto 20px; width:600px; }
-                 .btnpref { float:right; }',
+              #smd_redir_control_panel { margin: 20px 0 0 0; border: none; padding: 0; }
+              #smd_redir_control_panel legend { display: none; }
+              #smd_redir_control_panel span#smd_redir_searchby { float: right; margin-left: 1em; }
+              .btnpref { display:none; /* resurrect when prefs available */ }
+              #smd_redir_create { padding: 8px; }
+              #smd_redir_create label { width: 8em; display: inline-block; margin-bottom: 8px; }
+              #smd_redir_create input { margin: 8px 8px 0 0; }',
         );
 
         echo '<style type="text/css">' . $smd_redir_styles['list'] . '</style>';
