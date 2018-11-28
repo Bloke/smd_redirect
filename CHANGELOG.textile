@@ -1,12 +1,15 @@
 h1. Changelog
 
-h2. 0.11 - 2015-06-NN
+h2. 0.2.0 - 2018-11-28
 
+* For Textpattern 4.7.x+
 * Added Textpack strings
 * Fixed jQuery save/delete so multiple consecutive updates are possible
+* Fixed drag/drop niggles and updated to latest version of library
+* Fixed Control panel toggle states
 * Fixed separate CSS event/step
-* Fixed PSR2 compliance
+* PSR2 compliance(ish)
 
 h2. 0.10
 
-* Public alpha (unrleased)
+* Public alpha (unreleased)
